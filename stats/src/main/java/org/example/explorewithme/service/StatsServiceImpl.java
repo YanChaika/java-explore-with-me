@@ -29,7 +29,6 @@ public class StatsServiceImpl implements StatsService {
         List<EndpointHit> endpointHits = new ArrayList<>();
         if((!uris.equals("false")) && (unique.equals("true"))) {
             endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfterUnique(uris, startTime, endTime);
-            //endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(startTime, endTime, uris);
         } else if(!uris.equals("false")) {
             endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(uris, startTime, endTime);
         } else if(unique.equals("true")) {
