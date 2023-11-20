@@ -27,12 +27,12 @@ public class StatsServiceImpl implements StatsService {
         LocalDateTime startTime = LocalDateTime.parse(start);
         LocalDateTime endTime = LocalDateTime.parse(end);
         List<EndpointHit> endpointHits = new ArrayList<>();
-        if((!uris.equals("false")) && (unique.equals("true"))) {
+        if ((!uris.equals("false")) && (unique.equals("true"))) {
             endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfterUnique(uris, startTime, endTime);
             //endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(startTime, endTime, uris);
-        } else if(!uris.equals("false")) {
+        } else if (!uris.equals("false")) {
             endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(uris, startTime, endTime);
-        } else if(unique.equals("true")) {
+        } else if (unique.equals("true")) {
             endpointHits = statsRepository.findAllByStartIsBeforeAndEndIsAfterUnique(startTime, endTime);
         } else {
             endpointHits = statsRepository.findAllByStartIsBeforeAndEndIsAfter(startTime, endTime);
