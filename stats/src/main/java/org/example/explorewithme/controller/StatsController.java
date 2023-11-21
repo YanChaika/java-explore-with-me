@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -22,16 +23,18 @@ import java.util.Optional;
 public class StatsController {
     private final StatsService statsService;
 
-    @GetMapping
+    @GetMapping("/stats")
     public ResponseEntity<Optional<ViewStatsDto>> findStats(@NotNull @RequestParam String start,
                                                             @NotNull @RequestParam String end,
-                                                            @RequestParam(name = "uris", defaultValue = "false") String uris,
-                                                            @RequestParam(name = "unique", defaultValue = "false") String unique
+                                                            @RequestParam(name = "uris", defaultValue = "false")
+                                                                List<String> uris,
+                                                            @RequestParam(name = "unique", defaultValue = "false") boolean unique
     ) {
+        //return ResponseEntity.ok(statsService.findStats(start, end, uris, unique));
         return ResponseEntity.ok(statsService.findStats(start, end, uris, unique));
     }
 
-    @PostMapping
+    @PostMapping("/hit")
     public ResponseEntity<Optional<EndpointHitDto>> postStats(@RequestBody @Valid EndpointHitDto endpointHit) {
         return ResponseEntity.ok(statsService.createStats(endpointHit));
     }
