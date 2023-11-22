@@ -8,81 +8,62 @@ import org.example.explorewithme.model.EndpointHit;
 import org.example.explorewithme.model.EndpointHitMapper;
 import org.example.explorewithme.repository.StatsRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class StatsServiceImpl implements StatsService {
 
     private final StatsRepository statsRepository;
 
     @Override
-    public Optional<ViewStatsDto> findStats(String start, String end, String uris, String unique) {
+    @Transactional
+    public List<ViewStatsDto> findStats(String start, String end, List<String> uris, String unique) {
         log.info("Получение статистики");
-        LocalDateTime startTime = LocalDateTime.parse(start);
-        LocalDateTime endTime = LocalDateTime.parse(end);
-        List<EndpointHit> endpointHits = new ArrayList<>();
-        if ((!uris.isEmpty()) && (unique.equals("true"))) {
-            endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfterUnique(uris, startTime, endTime);
-            //endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(startTime, endTime, uris);
-        } else if (!uris.equals("false")) {
-            endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(uris, startTime, endTime);
-        } else if (unique.equals("true")) {
-            endpointHits = statsRepository.findAllByStartIsBeforeAndEndIsAfterUnique(startTime, endTime);
-        } else {
-            endpointHits = statsRepository.findAllByStartIsBeforeAndEndIsAfter(startTime, endTime);
-        }
-        ViewStatsDto viewStatsDto = new ViewStatsDto();
-        for (EndpointHit endpointHit : endpointHits) {
-            viewStatsDto.setApp(endpointHit.getApp());
-            viewStatsDto.setUri(endpointHit.getUri());
-        }
-        viewStatsDto.setHits(endpointHits.size());
-        return Optional.of(viewStatsDto);
-    }
-
-    @Override
-    public Optional<ViewStatsDto> findStats(String start, String end, List<String> uris, boolean unique) {
-        log.info("Получение статистики");
+        List<EndpointHit> all = statsRepository.findAll();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime startTime = LocalDateTime.parse(start, formatter);
         LocalDateTime endTime = LocalDateTime.parse(end, formatter);
-        List<EndpointHit> endpointHits = new ArrayList<>();
-        if ((!uris.isEmpty()) && (unique)) {
+        List<ViewStatsDto> viewStatsDtos = new ArrayList<>();
+        List<ViewStatsDto> viewStatsDtosByAllUri = new ArrayList<>();
+        if ((!uris.get(0).equals("false")) && (unique.equals("true"))) {
             for (String s : uris) {
-                endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfterUnique(s, startTime, endTime);
+                viewStatsDtos = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfterUnique(s, startTime, endTime);
+                viewStatsDtosByAllUri.addAll(viewStatsDtos);
             }
-        } else if (!uris.isEmpty()) {
+        } else if (!uris.get(0).equals("false")) {
             for (String s : uris) {
-                endpointHits = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(s, startTime, endTime);
+                viewStatsDtos = statsRepository.findAllByUrisFromStartIsBeforeAndEndIsAfter(s, startTime, endTime);
+                viewStatsDtosByAllUri.addAll(viewStatsDtos);
             }
-        } else if (unique) {
-            endpointHits = statsRepository.findAllByStartIsBeforeAndEndIsAfterUnique(startTime, endTime);
+        } else if (unique.equals("true")) {
+            viewStatsDtos = statsRepository.findAllByStartIsBeforeAndEndIsAfterUnique(startTime, endTime);
+            viewStatsDtosByAllUri.addAll(viewStatsDtos);
         } else {
-            endpointHits = statsRepository.findAllByStartIsBeforeAndEndIsAfter(startTime, endTime);
+            viewStatsDtos = statsRepository.findAllByStartIsBeforeAndEndIsAfter(startTime, endTime);
+            viewStatsDtosByAllUri.addAll(viewStatsDtos);
         }
-        ViewStatsDto viewStatsDto = new ViewStatsDto();
-        for (EndpointHit endpointHit : endpointHits) {
-            viewStatsDto.setApp(endpointHit.getApp());
-            viewStatsDto.setUri(endpointHit.getUri());
-        }
-        viewStatsDto.setHits(endpointHits.size());
-        return Optional.of(viewStatsDto);
+        Collections.sort(viewStatsDtosByAllUri, new Comparator<ViewStatsDto>() {
+            public int compare(ViewStatsDto o1, ViewStatsDto o2) {
+                return o2.getHits().compareTo(o1.getHits());
+            }
+        });
+        return viewStatsDtosByAllUri;
     }
 
 
     @Override
-    public Optional<EndpointHitDto> createStats(EndpointHitDto endpointHitDto) {
+    public EndpointHitDto createStats(EndpointHitDto endpointHitDto) {
         log.info("Добавление статистики");
         EndpointHit endpointHit = EndpointHitMapper.fromEndpointHitDto(endpointHitDto);
         EndpointHit endpointHitWithId = statsRepository.save(endpointHit);
         EndpointHitDto endpointHitDtoWithId = EndpointHitMapper.toEndpointHitDto(endpointHitWithId);
-        return Optional.of(endpointHitDtoWithId);
+        return endpointHitDtoWithId;
     }
 }

@@ -5,14 +5,13 @@ import org.example.explorewithme.dto.ViewStatsDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-@Transactional(readOnly = true)
+@Transactional
 public interface StatsService {
 
-    Optional<ViewStatsDto> findStats(String start, String end, String uris, String unique);
+    @Transactional
+    List<ViewStatsDto> findStats(String start, String end, List<String> uris, String unique);
 
-    Optional<ViewStatsDto> findStats(String start, String end, List<String> uris, boolean unique);
-
-    Optional<EndpointHitDto> createStats(EndpointHitDto endpointHit);
+    @Transactional
+    EndpointHitDto createStats(EndpointHitDto endpointHit);
 }

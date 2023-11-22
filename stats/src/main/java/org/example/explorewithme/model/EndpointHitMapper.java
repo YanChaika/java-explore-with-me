@@ -2,10 +2,13 @@ package org.example.explorewithme.model;
 
 import org.example.explorewithme.dto.EndpointHitDto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class EndpointHitMapper {
+
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 
     public static EndpointHit fromEndpointHitDto(EndpointHitDto endpointHitDto) {
         return new EndpointHit(
@@ -13,7 +16,8 @@ public class EndpointHitMapper {
                 endpointHitDto.getApp(),
                 endpointHitDto.getUri(),
                 endpointHitDto.getIp(),
-                endpointHitDto.getTimestamp());
+                LocalDateTime.parse(endpointHitDto.getTimestamp(), formatter)
+        );
     }
 
     public static EndpointHitDto toEndpointHitDto(EndpointHit endpointHit) {
@@ -22,15 +26,7 @@ public class EndpointHitMapper {
                 endpointHit.getApp(),
                 endpointHit.getUri(),
                 endpointHit.getIp(),
-                endpointHit.getTimestamp()
+                endpointHit.getTimestamp().toString()
         );
-    }
-
-    public static List<EndpointHitDto> toEndpointHitsDto(List<EndpointHit> endpointHits) {
-        List<EndpointHitDto> endpointHitDtos = new ArrayList<>();
-        for (EndpointHit endpointHit : endpointHits) {
-            endpointHitDtos.add(EndpointHitMapper.toEndpointHitDto(endpointHit));
-        }
-        return endpointHitDtos;
     }
 }

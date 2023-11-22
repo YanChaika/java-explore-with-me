@@ -6,16 +6,13 @@ import org.example.explorewithme.dto.EndpointHitDto;
 import org.example.explorewithme.dto.ViewStatsDto;
 import org.example.explorewithme.service.StatsService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping
 @RequiredArgsConstructor
 @Slf4j
@@ -24,18 +21,17 @@ public class StatsController {
     private final StatsService statsService;
 
     @GetMapping("/stats")
-    public ResponseEntity<Optional<ViewStatsDto>> findStats(@NotNull @RequestParam String start,
+    public List<ViewStatsDto> findStats(@NotNull @RequestParam String start,
                                                             @NotNull @RequestParam String end,
                                                             @RequestParam(name = "uris", defaultValue = "false")
                                                                 List<String> uris,
-                                                            @RequestParam(name = "unique", defaultValue = "false") boolean unique
+                                                            @RequestParam(name = "unique", defaultValue = "false") String unique
     ) {
-        //return ResponseEntity.ok(statsService.findStats(start, end, uris, unique));
-        return ResponseEntity.ok(statsService.findStats(start, end, uris, unique));
+        return statsService.findStats(start, end, uris, unique);
     }
 
     @PostMapping("/hit")
-    public ResponseEntity<Optional<EndpointHitDto>> postStats(@RequestBody @Valid EndpointHitDto endpointHit) {
+    public ResponseEntity<EndpointHitDto> postStats(@RequestBody EndpointHitDto endpointHit) {
         return ResponseEntity.ok(statsService.createStats(endpointHit));
     }
 }

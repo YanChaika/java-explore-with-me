@@ -10,7 +10,11 @@ public class StatsClient {
         this.rest = rest;
     }
 
-    protected ResponseEntity<Object> get(String path) {
+    /*protected ResponseEntity<Object> get(String path) {
         return get(path);
     }
+
+    protected <T> ResponseEntity<Object> post(String path, T body) {
+        return post(path, body);
+    };*/
 }

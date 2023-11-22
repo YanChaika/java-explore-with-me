@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity//(name = "EndpointHit")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
