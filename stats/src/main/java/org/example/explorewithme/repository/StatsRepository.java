@@ -25,7 +25,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
     @Query(value = "SELECT new org.example.explorewithme.dto.ViewStatsDto(it.app, it.uri, COUNT(DISTINCT it.ip)) " +
             "FROM EndpointHit AS it " +
             "WHERE it.uri LIKE ?1 AND it.timestamp BETWEEN ?2 AND ?3 " +
-            "GROUP BY it.app " +
+            "GROUP BY it.app, it.uri " +
             "ORDER BY COUNT(DISTINCT it.ip) DESC")
     List<ViewStatsDto> findAllByUrisFromStartIsBeforeAndEndIsAfterUnique(
             String uris,
@@ -36,7 +36,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
     @Query(value = "SELECT new org.example.explorewithme.dto.ViewStatsDto(it.app, it.uri, COUNT(*)) " +
             "FROM EndpointHit AS it " +
             "WHERE it.uri LIKE ?1 AND it.timestamp BETWEEN ?2 AND ?3 " +
-            "GROUP BY it.app")
+            "GROUP BY it.app, it.uri")
     List<ViewStatsDto> findAllByUrisFromStartIsBeforeAndEndIsAfter(
             String uris,
             LocalDateTime start,
