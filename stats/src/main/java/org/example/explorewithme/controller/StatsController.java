@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -21,8 +20,8 @@ public class StatsController {
     private final StatsService statsService;
 
     @GetMapping("/stats")
-    public List<ViewStatsDto> findStats(@NotNull @RequestParam String start,
-                                                            @NotNull @RequestParam String end,
+    public List<ViewStatsDto> findStats(@RequestParam String start,
+                                                            @RequestParam String end,
                                                             @RequestParam(name = "uris", defaultValue = "false")
                                                                 List<String> uris,
                                                             @RequestParam(name = "unique", defaultValue = "false") String unique
