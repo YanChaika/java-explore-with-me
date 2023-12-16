@@ -1,7 +1,6 @@
 package org.example.explorewithme.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.explorewithme.dto.EndpointHitDto;
 import org.example.explorewithme.dto.ViewStatsDto;
 import org.example.explorewithme.service.StatsService;
@@ -14,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@Slf4j
 @Validated
 public class StatsController {
     private final StatsService statsService;
@@ -24,7 +22,8 @@ public class StatsController {
                                                             @RequestParam String end,
                                                             @RequestParam(name = "uris", defaultValue = "false")
                                                                 List<String> uris,
-                                                            @RequestParam(name = "unique", defaultValue = "false") String unique
+                                                            @RequestParam(name = "unique", defaultValue = "false")
+                                                                String unique
     ) {
         return statsService.findStats(start, end, uris, unique);
     }
