@@ -29,7 +29,7 @@ public interface EventService {
 
     EventFullDto updateEventByEventId(Long eventId, UpdateEventAdminRequest updateEventAdminRequest);
 
-    List<EventShortDto> findEvents (
+    List<EventShortDto> findEvents(
             String text,
             List<Long> categories,
             Boolean paid,
