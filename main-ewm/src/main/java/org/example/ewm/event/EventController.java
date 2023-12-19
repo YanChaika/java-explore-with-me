@@ -103,11 +103,19 @@ public class EventController {
             @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(name = "sort", defaultValue = "false") String sort,
             @RequestParam(name = "from", defaultValue = "0") Integer from,
-            @RequestParam(name = "size", defaultValue = "10") Integer size
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            HttpServletRequest request
             ) {
         log.info("Get events by text={}, categories={}, paid={}, rangeStart={}, rangeEnd={}, onlyAvailable={}, " +
                 " sort={}, from={}, size={}",
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        EndpointHitDto endpointHitDto = new EndpointHitDto(
+                0,
+                "main",
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        statsClient.postStats(endpointHitDto);
         return eventService.findEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
