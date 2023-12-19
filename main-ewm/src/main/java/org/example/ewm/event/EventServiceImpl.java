@@ -301,7 +301,9 @@ public class EventServiceImpl implements EventService {
             eventToUpdate.setParticipantLimit(updateEvent.getParticipantLimit());
         }
         if (updateEvent.getRequestModeration() != null) {
-            eventToUpdate.setRequestModeration(updateEvent.getRequestModeration());
+            if (updateEvent.getRequestModeration()) {
+                eventToUpdate.setRequestModeration(true);
+            }
         }
         if (updateEvent.getTitle() != null) {
             eventToUpdate.setTitle(updateEvent.getTitle());

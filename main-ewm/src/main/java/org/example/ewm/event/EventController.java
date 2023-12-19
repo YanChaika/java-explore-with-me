@@ -137,12 +137,17 @@ public class EventController {
                 "true"
         );
         Object[] objects = view.getBody();
-        ObjectMapper mapper = new ObjectMapper();
-        List<Long> hits = Arrays.stream(objects)
-                .map(object -> mapper.convertValue(object, ViewStatsDto.class))
-                .map(ViewStatsDto::getHits)
-                .collect(Collectors.toList());
-        ViewStatsDto viewStatsDto = new ViewStatsDto("main", uri, hits.get(0));
+        ViewStatsDto viewStatsDto;
+        if (objects != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Long> hits = Arrays.stream(objects)
+                    .map(object -> mapper.convertValue(object, ViewStatsDto.class))
+                    .map(ViewStatsDto::getHits)
+                    .collect(Collectors.toList());
+            viewStatsDto = new ViewStatsDto("main", uri, hits.get(0));
+        } else {
+            viewStatsDto = new ViewStatsDto("main", uri, 0L);
+        }
         return eventService.findEventById(id, viewStatsDto);
     }
 }
