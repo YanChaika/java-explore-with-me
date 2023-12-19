@@ -31,5 +31,17 @@ services:
       - "8080:8080"
     depends_on:
       - stats-server
+      - stats-db
+      - ewm-db
     environment:
       - explore-with-me-main.url=http://localhost:9090
+
+  ewm-db:
+    image: postgres:13.7-alpine
+    container_name: explore-with-me-ewm-db
+    ports:
+      - "6542:5431"
+    environment:
+      - POSTGRES_PASSWORD=explorewithme
+      - POSTGRES_USER=explorewithme
+      - POSTGRES_DB=explorewithmemain
