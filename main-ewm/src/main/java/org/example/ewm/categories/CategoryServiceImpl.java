@@ -35,6 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = CategoryMapper.fromNewCategoryDto(newCategoryDto);
         Category categoryWithId = categoryRepository.save(category);
         CategoryDto categoryDto = CategoryMapper.toCategoryDto(categoryWithId);
+        List<Category> all = categoryRepository.findAll();
         return categoryDto;
     }
 
@@ -81,6 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto findCategoryById(Long catId) {
         log.info("Поиск категории c id " + catId);
+        List<Category> all = categoryRepository.findAll();
         Category category = categoryRepository.findById(catId).orElseThrow(
                 () -> new NotFoundException("Категория с id " + catId + " не найдена")
         );
