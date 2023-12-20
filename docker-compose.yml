@@ -13,7 +13,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=explorewithme
       - SPRING_DATASOURCE_PASSWORD=explorewithme
 
-
   stats-db:
     image: postgres:13.7-alpine
     container_name: explore-with-me-db
@@ -23,3 +22,29 @@ services:
       - POSTGRES_PASSWORD=explorewithme
       - POSTGRES_USER=explorewithme
       - POSTGRES_DB=explorewithme
+
+  ewm-server:
+    build: main-ewm
+    image: explore-with-me-main
+    container_name: explore-with-me-main
+    ports:
+      - "8080:8080"
+    depends_on:
+      - stats-server
+      - stats-db
+      - ewm-db
+    environment:
+      - EXPLORE_WITH_ME_STATS_URL=http://stats-server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/explorewithmemain
+      - SPRING_DATASOURCE_USERNAME=explorewithme
+      - SPRING_DATASOURCE_PASSWORD=explorewithme
+
+  ewm-db:
+    image: postgres:13.7-alpine
+    container_name: explore-with-me-ewm-db
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_PASSWORD=explorewithme
+      - POSTGRES_USER=explorewithme
+      - POSTGRES_DB=explorewithmemain
