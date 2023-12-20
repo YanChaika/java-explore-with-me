@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class CategoryDto {
     private Long id;
-    @NotBlank
+    //@NotBlank
     @Size(min = 1, max = 50, message
             = "Annotation must be between 1 and 50 characters")
     private String name;
