@@ -22,7 +22,7 @@ public class UpdateEventAdminRequest {
     private String description;
     private String eventDate;
     private Location location;
-    private boolean paid;
+    private Boolean paid;
     private Long participantLimit;
     private Boolean requestModeration;
     private String stateAction;

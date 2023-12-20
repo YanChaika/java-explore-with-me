@@ -35,6 +35,9 @@ services:
       - ewm-db
     environment:
       - explore-with-me-main.url=http://localhost:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5431/explorewithmemain
+      - SPRING_DATASOURCE_USERNAME=explorewithme
+      - SPRING_DATASOURCE_PASSWORD=explorewithme
 
   ewm-db:
     image: postgres:13.7-alpine

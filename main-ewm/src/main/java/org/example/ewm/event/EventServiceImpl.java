@@ -294,8 +294,8 @@ public class EventServiceImpl implements EventService {
         if (updateEvent.getLocation() != null) {
             eventToUpdate.setLocation(updateEvent.getLocation());
         }
-        if (updateEvent.isPaid()) {
-            eventToUpdate.setPaid(true);
+        if (updateEvent.getPaid() != null) {
+            eventToUpdate.setPaid(updateEvent.getPaid());
         }
         if (updateEvent.getParticipantLimit() != null) {
             eventToUpdate.setParticipantLimit(updateEvent.getParticipantLimit());
