@@ -8,6 +8,7 @@ import org.example.ewm.enums.RequestStatus;
 import org.example.ewm.enums.State;
 import org.example.ewm.enums.StateAction;
 import org.example.ewm.event.dto.*;
+import org.example.ewm.event.model.Comment;
 import org.example.ewm.event.model.Event;
 import org.example.ewm.exception.ConflictException;
 import org.example.ewm.exception.NotFoundException;
@@ -41,6 +42,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<EventShortDto> findEventsByUserId(Long userId, Integer from, Integer size) {
@@ -441,6 +443,40 @@ public class EventServiceImpl implements EventService {
         }
         event.setViews(viewStatsDto.getHits());
         return EventMapper.toEventFullDto(event);
+    }
+
+    @Override
+    @Transactional
+    public CommentFullDto createComment(CommentDto commentDto, Long userId, Long eventId) {
+        log.info("Поиск события по параметрам");
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("Пользователь с id" + userId + " не найден")
+        );
+        Event event = eventRepository.findById(eventId).orElseThrow(
+                () -> new NotFoundException("Событие с id" + eventId + " не найдено")
+        );
+        if (event.getState().equals(State.CANCELED)) {
+            throw new ConflictException("Событие отменено");
+        }
+        LocalDateTime createdTime = LocalDateTime.now();
+        Comment comment = CommentMapper.fromCommentDto(commentDto, event, user, createdTime);
+        commentRepository.save(comment);
+        return CommentMapper.toCommentFullDto(comment);
+    }
+
+    @Override
+    public List<CommentFullDto> findCommentsByEventId(Long userId, Long eventId, Integer from, Integer size) {
+        log.info("Поиск комментариев");
+        isUserExist(userId);
+        Event event = eventRepository.findById(eventId).orElseThrow(
+                () -> new NotFoundException("Событие с id" + eventId + " не найдено")
+        );
+        List<Comment> comments = commentRepository.findAllByEventId(eventId);
+        if ((size + from) > comments.size()) {
+            size = comments.size() - from;
+        }
+        List<CommentFullDto> commentFullDtos = CommentMapper.toCommentsFullDto(comments);
+        return commentFullDtos.subList(from, size);
     }
 
     private void isUserExist(Long userId) {
