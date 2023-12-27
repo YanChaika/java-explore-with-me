@@ -42,4 +42,8 @@ public interface EventService {
     );
 
     EventFullDto findEventById(Long id, ViewStatsDto viewStatsDto);
+
+    CommentFullDto createComment(CommentDto commentDto, Long userId, Long eventId);
+
+    List<CommentFullDto> findCommentsByEventId(Long userId, Long eventId, Integer from, Integer size);
 }

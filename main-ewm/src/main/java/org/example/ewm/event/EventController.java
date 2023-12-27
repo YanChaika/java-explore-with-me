@@ -158,4 +158,23 @@ public class EventController {
         }
         return eventService.findEventById(id, viewStatsDto);
     }
+
+    @PostMapping("/users/{userId}/{eventId}/comment")
+    public CommentFullDto createComment(@Positive @PathVariable(name = "userId") Long userId,
+                                         @Positive @PathVariable(name = "eventId") Long eventId,
+                                         @RequestBody CommentDto commentDto) {
+        log.info("Create comment {} from userid={}, by event id={}", commentDto, userId, eventId);
+        CommentFullDto commentFullDto = eventService.createComment(commentDto, userId, eventId);
+        return commentFullDto;
+    }
+
+    @GetMapping("/users/{userId}/{eventId}")
+    public List<CommentFullDto> findCommentsByEventId(@Positive @PathVariable(name = "userId") Long userId,
+                                                       @Positive @PathVariable(name = "eventId") Long eventId,
+                                                       @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                       @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        log.info("Find comments from user id={}, by event id={}, from={}, size={}", userId, eventId, from, size);
+        List<CommentFullDto> commentFullDtos = eventService.findCommentsByEventId(userId, eventId, from, size);
+        return commentFullDtos;
+    }
 }
